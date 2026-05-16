@@ -29,6 +29,7 @@ This extension is built with maximum privacy in mind:
 ## 📥 Installation
 
 ### Chrome Web Store
+![Secure Password Generator](screenshots/preview.png)
 [![Available in the Chrome Web Store](https://img.shields.io/badge/Available%20in%20Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/dnjdojjhmhdgljjiapkcchcobgnbchjk)
 
 ### Manual Installation (Developer Mode)
