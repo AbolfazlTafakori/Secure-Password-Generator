@@ -10,6 +10,9 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExportToHTMLSettings">
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/../PasswordGenerator\exportToHTML" />
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -98,7 +101,7 @@
       <workItem from="1778782649856" duration="2778000" />
       <workItem from="1778830728818" duration="2075000" />
       <workItem from="1778914316922" duration="3718000" />
-      <workItem from="1780752097233" duration="1448000" />
+      <workItem from="1780752097233" duration="3893000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />

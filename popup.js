@@ -90,6 +90,7 @@ function generatePassword() {
 
     document.getElementById("password").textContent = password;
     updateStrengthMeter(password, fullPool.length);
+    pushToHistory(password);
 }
 
 function updateStrengthMeter(password, poolSize) {
@@ -133,6 +134,68 @@ function copyPassword() {
         .catch(() => showToast("Copy failed — try manually", "error"));
 }
 
+// ========== History (chrome.storage.session — survives popup close, clears on browser exit) ==========
+function pushToHistory(password) {
+    chrome.storage.session.get({ history: [] }, (data) => {
+        const history = data.history;
+        if (history[0] === password) return;
+        history.unshift(password);
+        if (history.length > 10) history.pop();
+        chrome.storage.session.set({ history }, () => renderHistory(history));
+    });
+}
+
+function renderHistory(history) {
+    const list  = document.getElementById("history-list");
+    const empty = document.getElementById("history-empty");
+
+    list.querySelectorAll(".history-item").forEach(el => el.remove());
+
+    if (!history || history.length === 0) {
+        empty.style.display = "block";
+        return;
+    }
+
+    empty.style.display = "none";
+    history.forEach(pw => {
+        const item = document.createElement("div");
+        item.className = "history-item";
+
+        const text = document.createElement("span");
+        text.className = "history-pw";
+        text.textContent = pw;
+
+        const btn = document.createElement("button");
+        btn.className = "history-copy-btn";
+        btn.title = "Copy this password";
+        btn.textContent = "⧉";
+        btn.addEventListener("click", () => {
+            navigator.clipboard.writeText(pw)
+                .then(() => showToast("Copied from history ✓"))
+                .catch(() => showToast("Copy failed", "error"));
+        });
+
+        item.appendChild(text);
+        item.appendChild(btn);
+        list.appendChild(item);
+    });
+}
+
+function toggleHistory() {
+    document.getElementById("history-panel").classList.toggle("open");
+}
+
+function clearPassword() {
+    const placeholder = "Password will appear here";
+    const pw = document.getElementById("password").textContent;
+    if (pw === placeholder) return;
+
+    document.getElementById("password").textContent = placeholder;
+    document.getElementById("strength-fill").style.width = "0%";
+    document.getElementById("strength-label").textContent = "";
+}
+
+// ========== Toast ==========
 let _toastTimer = null;
 function showToast(message, type = "success") {
     const toast = document.getElementById("toast");
@@ -144,11 +207,18 @@ function showToast(message, type = "success") {
     _toastTimer = setTimeout(() => { toast.style.opacity = "0"; }, 2200);
 }
 
+// ========== Event Listeners ==========
 document.addEventListener("DOMContentLoaded", () => {
     generatePassword();
 
+    // Load history from previous session on popup open
+    chrome.storage.session.get({ history: [] }, (data) => renderHistory(data.history));
+
     document.getElementById("generate").addEventListener("click", generatePassword);
     document.getElementById("password").addEventListener("click", copyPassword);
+    document.getElementById("btn-copy").addEventListener("click", copyPassword);
+    document.getElementById("btn-history").addEventListener("click", toggleHistory);
+    document.getElementById("btn-clear").addEventListener("click", clearPassword);
 
     let _lengthTimer = null;
     document.getElementById("length").addEventListener("input", () => {
