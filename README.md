@@ -2,18 +2,21 @@
 
 A clean, fast, and truly private password generator for Chrome.
 
-![Version](https://img.shields.io/badge/Version-1.0-blue)
+![Version](https://img.shields.io/badge/Version-2.0-blue)
 ![Chrome](https://img.shields.io/badge/Chrome-Extension-brightgreen)
 
 ## ✨ Features
 
-- Generates strong random passwords using browser's Crypto API
+- Cryptographically secure passwords using browser's Crypto API
+- Unbiased random generation (rejection sampling — no modulo bias)
+- Guaranteed inclusion of every selected character type
 - Customizable length from 8 to 128 characters
 - Support for lowercase, uppercase, numbers, and symbols
 - Option to exclude similar characters (o, O, 0, i, I, l, L, 1)
 - Option to exclude ambiguous characters
-- Real-time password strength indicator
-- One-click copy (just click on the password)
+- Entropy-based password strength indicator (Very Weak → Very Strong)
+- One-click copy — click the password to copy instantly
+- Keyboard accessible (Tab + Enter to copy)
 - Completely offline and private
 - No permissions required
 - No data collection or tracking
@@ -25,6 +28,18 @@ This extension is built with maximum privacy in mind:
 - No telemetry or analytics
 - No remote code
 - Uses `crypto.getRandomValues()` for cryptographic security
+- Strength meter based on real entropy bits, not heuristics
+
+## 🆕 What's New in v2.0
+
+- **Unbiased randomness** — fixed modulo bias in character selection
+- **Guaranteed character types** — every selected type always appears in the password
+- **Entropy-based strength meter** — accurate scoring using `length × log₂(pool size)`
+- **Strength label** — shows Very Weak / Weak / Medium / Strong / Very Strong
+- **Auto-regenerate** — password updates live as you change the length
+- **Input validation** — length is always clamped between 8 and 128
+- **Keyboard support** — fully navigable with Tab and Enter
+- **Improved symbols pool** — includes `[]{}~` for higher entropy
 
 ## 📥 Installation
 
@@ -39,7 +54,7 @@ This extension is built with maximum privacy in mind:
 
 ## 📸 Screenshots
 
-<img width="1280" height="800" alt="ChatGPT Image May 15, 2026, 11_06_26 AM (1)" src="https://github.com/user-attachments/assets/452a5c9d-7947-437a-8895-4eff2f3ca2e6" />
+<img width="1280" height="800" alt="Secure Password Generator" src="https://github.com/user-attachments/assets/452a5c9d-7947-437a-8895-4eff2f3ca2e6" />
 
 ## 👨‍💻 Developed by
 
