@@ -15,18 +15,20 @@ A clean, fast, and truly private password generator for Chrome.
 - Option to exclude similar characters (o, O, 0, i, I, l, L, 1)
 - Option to exclude ambiguous characters
 - Entropy-based password strength indicator (Very Weak → Very Strong)
-- One-click copy — click the password to copy instantly
+- One-click copy — click the password or use the Copy button
+- Session history — view and re-copy your last 10 passwords
 - Keyboard accessible (Tab + Enter to copy)
 - Completely offline and private
-- No permissions required
-- No data collection or tracking
+- No data stored to disk — history clears when browser closes
+- No telemetry or tracking
 
 ## 🛡️ Security & Privacy
 
 This extension is built with maximum privacy in mind:
-- No data is stored
+- No data is written to disk or synced
+- Session history lives only in memory — cleared when the browser closes
 - No telemetry or analytics
-- No remote code
+- No remote code execution
 - Uses `crypto.getRandomValues()` for cryptographic security
 - Strength meter based on real entropy bits, not heuristics
 
@@ -36,6 +38,9 @@ This extension is built with maximum privacy in mind:
 - **Guaranteed character types** — every selected type always appears in the password
 - **Entropy-based strength meter** — accurate scoring using `length × log₂(pool size)`
 - **Strength label** — shows Very Weak / Weak / Medium / Strong / Very Strong
+- **Copy button** — dedicated button in addition to clicking the password
+- **Session history** — last 10 passwords, persists across popup open/close, clears on browser exit
+- **Clear button** — reset the password display instantly
 - **Auto-regenerate** — password updates live as you change the length
 - **Input validation** — length is always clamped between 8 and 128
 - **Keyboard support** — fully navigable with Tab and Enter
