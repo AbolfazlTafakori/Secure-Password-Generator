@@ -1,112 +1,168 @@
 // ========== Character Pools ==========
 const charPools = {
-    lower: "abcdefghijklmnopqrstuvwxyz",
-    upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    lower:   "abcdefghijklmnopqrstuvwxyz",
+    upper:   "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     numbers: "0123456789",
-    symbols: "!@#$%^&*()_+-=[]{}|;:,.<>/?"
+    symbols: "!@#$%^&*()_+-=[]{}|;:,.<>/?~"
 };
 
-// Similar & Ambiguous characters
-const similarChars = "oO0iIlL1";
+const similarChars   = "oO0iIlL1";
 const ambiguousChars = "~;:.{}[]()<>\\/'\"`";
 
-// ========== Generate Random Password ==========
-function generatePassword() {
-    const length = parseInt(document.getElementById("length").value) || 16;
+function secureRandInt(max) {
+    const limit = Math.floor(0x100000000 / max) * max;
+    const buf = new Uint32Array(1);
+    let val;
+    do {
+        crypto.getRandomValues(buf);
+        val = buf[0];
+    } while (val >= limit);
+    return val % max;
+}
 
-    const useLower = document.getElementById("lower").checked;
-    const useUpper = document.getElementById("upper").checked;
-    const useNumbers = document.getElementById("numbers").checked;
-    const useSymbols = document.getElementById("symbols").checked;
-    const excludeSimilar = document.getElementById("exclude-similar").checked;
+function secureShuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = secureRandInt(i + 1);
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function buildPools() {
+    const useLower         = document.getElementById("lower").checked;
+    const useUpper         = document.getElementById("upper").checked;
+    const useNumbers       = document.getElementById("numbers").checked;
+    const useSymbols       = document.getElementById("symbols").checked;
+    const excludeSimilar   = document.getElementById("exclude-similar").checked;
     const excludeAmbiguous = document.getElementById("exclude-ambiguous").checked;
 
-    let pool = "";
-    if (useLower) pool += charPools.lower;
-    if (useUpper) pool += charPools.upper;
-    if (useNumbers) pool += charPools.numbers;
-    if (useSymbols) pool += charPools.symbols;
+    const selected = {};
+    if (useLower)   selected.lower   = charPools.lower;
+    if (useUpper)   selected.upper   = charPools.upper;
+    if (useNumbers) selected.numbers = charPools.numbers;
+    if (useSymbols) selected.symbols = charPools.symbols;
 
-    if (excludeSimilar) {
-        pool = pool.split('').filter(c => !similarChars.includes(c)).join('');
-    }
-    if (excludeAmbiguous) {
-        pool = pool.split('').filter(c => !ambiguousChars.includes(c)).join('');
+    for (const key in selected) {
+        let chars = selected[key].split('');
+        if (excludeSimilar)   chars = chars.filter(c => !similarChars.includes(c));
+        if (excludeAmbiguous) chars = chars.filter(c => !ambiguousChars.includes(c));
+        selected[key] = chars.join('');
     }
 
-    if (pool.length === 0) {
+    for (const key in selected) {
+        if (selected[key].length === 0) delete selected[key];
+    }
+
+    return selected;
+}
+
+function getValidLength() {
+    const el  = document.getElementById("length");
+    const raw = parseInt(el.value);
+    if (isNaN(raw) || raw < 8)  { el.value = 8;   return 8;   }
+    if (raw > 128)               { el.value = 128; return 128; }
+    return raw;
+}
+
+function generatePassword() {
+    const length = getValidLength();
+    const pools  = buildPools();
+    const keys   = Object.keys(pools);
+
+    if (keys.length === 0) {
         showToast("Please select at least one character type!", "error");
-        return "";
-    }
-
-    const randomArray = new Uint32Array(length);
-    crypto.getRandomValues(randomArray);
-
-    let password = "";
-    for (let i = 0; i < length; i++) {
-        password += pool[randomArray[i] % pool.length];
-    }
-
-    const passwordEl = document.getElementById("password");
-    passwordEl.textContent = password;
-
-    updateStrengthMeter(password);
-    return password;
-}
-
-// ========== Strength Meter ==========
-function updateStrengthMeter(password) {
-    const strengthFill = document.getElementById("strength-fill");
-    let strength = 0;
-
-    if (password.length >= 12) strength += 25;
-    if (password.length >= 16) strength += 15;
-    if (/[A-Z]/.test(password)) strength += 20;
-    if (/[a-z]/.test(password)) strength += 20;
-    if (/\d/.test(password)) strength += 10;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 10;
-
-    const percentage = Math.min(strength, 100);
-    strengthFill.style.width = percentage + "%";
-
-    if (percentage > 75) strengthFill.style.background = "#22c55e";
-    else if (percentage > 50) strengthFill.style.background = "#eab308";
-    else strengthFill.style.background = "#ef4444";
-}
-
-// ========== Copy Password ==========
-function copyPassword() {
-    const passwordText = document.getElementById("password").textContent;
-
-    if (!passwordText || passwordText.length < 4 || passwordText === "Password will appear here") {
-        showToast("Generate a password first", "error");
         return;
     }
 
-    navigator.clipboard.writeText(passwordText).then(() => {
-        showToast("Password copied to clipboard ✓");
+    const fullPool = keys.map(k => pools[k]).join('').split('');
+
+    const mandatory = keys.map(k => {
+        const chars = pools[k].split('');
+        return chars[secureRandInt(chars.length)];
     });
+
+    const rest = [];
+    for (let i = 0; i < length - mandatory.length; i++) {
+        rest.push(fullPool[secureRandInt(fullPool.length)]);
+    }
+
+    const password = secureShuffle([...mandatory, ...rest]).join('');
+
+    document.getElementById("password").textContent = password;
+    updateStrengthMeter(password, fullPool.length);
 }
 
-// ========== Toast Notification ==========
+function updateStrengthMeter(password, poolSize) {
+    const strengthFill  = document.getElementById("strength-fill");
+    const strengthLabel = document.getElementById("strength-label");
+
+    const entropy = password.length * Math.log2(Math.max(poolSize, 2));
+
+    let percentage, color, label;
+    if (entropy >= 100) {
+        percentage = 100; color = "#22c55e"; label = "Very Strong";
+    } else if (entropy >= 72) {
+        percentage = 80;  color = "#22c55e"; label = "Strong";
+    } else if (entropy >= 50) {
+        percentage = 55;  color = "#eab308"; label = "Medium";
+    } else if (entropy >= 35) {
+        percentage = 30;  color = "#f97316"; label = "Weak";
+    } else {
+        percentage = 10;  color = "#ef4444"; label = "Very Weak";
+    }
+
+    strengthFill.style.width      = percentage + "%";
+    strengthFill.style.background = color;
+    if (strengthLabel) {
+        strengthLabel.textContent = label;
+        strengthLabel.style.color = color;
+    }
+}
+
+function copyPassword() {
+    const passwordEl   = document.getElementById("password");
+    const passwordText = passwordEl.textContent.trim();
+
+    if (!passwordText || passwordText === "Password will appear here") {
+        showToast("Generate a password first!", "error");
+        return;
+    }
+
+    navigator.clipboard.writeText(passwordText)
+        .then(() => showToast("Password copied to clipboard ✓"))
+        .catch(() => showToast("Copy failed — try manually", "error"));
+}
+
+let _toastTimer = null;
 function showToast(message, type = "success") {
     const toast = document.getElementById("toast");
     toast.textContent = message;
     toast.style.background = type === "error" ? "#ef4444" : "#22c55e";
     toast.style.opacity = "1";
 
-    setTimeout(() => {
-        toast.style.opacity = "0";
-    }, 2200);
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(() => { toast.style.opacity = "0"; }, 2200);
 }
 
-// ========== Event Listeners ==========
 document.addEventListener("DOMContentLoaded", () => {
     generatePassword();
 
-    // Generate button
     document.getElementById("generate").addEventListener("click", generatePassword);
-
-    // Click on password area to copy
     document.getElementById("password").addEventListener("click", copyPassword);
+
+    let _lengthTimer = null;
+    document.getElementById("length").addEventListener("input", () => {
+        clearTimeout(_lengthTimer);
+        _lengthTimer = setTimeout(() => {
+            const pw = document.getElementById("password").textContent;
+            if (pw && pw !== "Password will appear here") generatePassword();
+        }, 300);
+    });
+
+    document.getElementById("password").addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            copyPassword();
+        }
+    });
 });

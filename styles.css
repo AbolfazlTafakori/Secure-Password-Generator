@@ -1,11 +1,11 @@
 :root {
-    --bg: #0f172a;
-    --surface: #1e2937;
-    --primary: #6366f1;
-    --text: #e2e8f0;
+    --bg:       #0f172a;
+    --surface:  #1e2937;
+    --primary:  #6366f1;
+    --text:     #e2e8f0;
     --text-secondary: #94a3b8;
-    --border: #334155;
-    --success: #22c55e;
+    --border:   #334155;
+    --success:  #22c55e;
 }
 
 * {
@@ -16,11 +16,11 @@
 
 body {
     width: 380px;
-    max-height: 520px;
+    max-height: 560px;
     overflow: hidden;
     background: var(--bg);
     color: var(--text);
-    font-family: Tahoma, Arial, sans-serif;
+    font-family: system-ui, -apple-system, Tahoma, Arial, sans-serif;
     padding: 18px;
     direction: ltr;
     text-align: left;
@@ -29,75 +29,120 @@ body {
 
 h2 {
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     color: var(--primary);
-    font-size: 1.35rem;
+    font-size: 1.3rem;
 }
 
 #password {
     background: var(--surface);
     border: 2px solid var(--border);
     border-radius: 12px;
-    padding: 16px;
-    font-size: 1.4rem;
+    padding: 14px 16px;
+    font-size: 1.35rem;
     letter-spacing: 2px;
     text-align: center;
-    min-height: 64px;
+    min-height: 58px;
     word-break: break-all;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     cursor: pointer;
+    transition: border-color 0.2s;
+    user-select: none;
+}
+
+#password:hover {
+    border-color: var(--primary);
+}
+
+.strength-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0 12px;
 }
 
 .strength-bar {
+    flex: 1;
     height: 6px;
     background: #334155;
     border-radius: 9999px;
-    margin: 10px 0 14px;
     overflow: hidden;
 }
 
 .strength-fill {
     height: 100%;
-    background: var(--primary);
     width: 0%;
-    transition: width 0.4s ease;
+    background: var(--primary);
+    border-radius: 9999px;
+    transition: width 0.4s ease, background 0.4s ease;
+}
+
+.strength-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    min-width: 70px;
+    text-align: right;
+    color: var(--text-secondary);
+    transition: color 0.3s;
+}
+
+.length-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 10px 11px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    font-size: 1.05rem;
+    margin: 5px 0 12px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input[type="number"]:focus {
+    border-color: var(--primary);
+}
+
+.options {
+    margin: 0 0 4px;
 }
 
 .options label {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 7px 0;
-    font-size: 0.96rem;
+    padding: 6px 0;
+    font-size: 0.93rem;
     cursor: pointer;
 }
 
-input[type="number"] {
-    width: 100%;
-    padding: 11px;
-    background: var(--surface);
-    border: 1px solid var(--border);
+.options label:hover {
     color: var(--text);
-    border-radius: 8px;
-    font-size: 1.1rem;
-    margin: 6px 0 14px;
 }
 
 input[type="checkbox"] {
-    width: 19px;
-    height: 19px;
+    width: 17px;
+    height: 17px;
     accent-color: var(--primary);
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
 button {
     width: 100%;
-    padding: 13px;
+    padding: 12px;
     margin: 10px 0 6px;
     border: none;
     border-radius: 10px;
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
 }
 
 #generate {
@@ -105,22 +150,41 @@ button {
     color: white;
 }
 
-#generate:hover {
-    background: #4f46e5;
+#generate:hover  { background: #4f46e5; }
+#generate:active { transform: scale(0.98); }
+
+.signature {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 0.76rem;
+    color: #64748b;
+}
+
+.signature a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signature a:hover {
+    text-decoration: underline;
 }
 
 .toast {
     position: fixed;
-    bottom: 20px;
+    bottom: 18px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--success);
     color: white;
-    padding: 12px 28px;
+    padding: 10px 26px;
     border-radius: 50px;
+    font-size: 0.92rem;
     font-weight: 500;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     opacity: 0;
     pointer-events: none;
     z-index: 1000;
+    transition: opacity 0.25s ease, background 0.2s ease;
+    white-space: nowrap;
 }
