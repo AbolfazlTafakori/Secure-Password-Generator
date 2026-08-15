@@ -2,7 +2,7 @@
 
 A clean, fast, and truly private password generator for Chrome.
 
-![Version](https://img.shields.io/badge/Version-2.0-blue)
+![Version](https://img.shields.io/badge/Version-2.1-blue)
 ![Chrome](https://img.shields.io/badge/Chrome-Extension-brightgreen)
 
 ## ✨ Features
@@ -10,7 +10,7 @@ A clean, fast, and truly private password generator for Chrome.
 - Cryptographically secure passwords using browser's Crypto API
 - Unbiased random generation (rejection sampling — no modulo bias)
 - Guaranteed inclusion of every selected character type
-- Customizable length from 8 to 128 characters
+- Customizable length from 8 to 128 characters with live slider
 - Support for lowercase, uppercase, numbers, and symbols
 - Option to exclude similar characters (o, O, 0, i, I, l, L, 1)
 - Option to exclude ambiguous characters
@@ -32,19 +32,15 @@ This extension is built with maximum privacy in mind:
 - Uses `crypto.getRandomValues()` for cryptographic security
 - Strength meter based on real entropy bits, not heuristics
 
-## 🆕 What's New in v2.0
+## 🆕 What's New in v2.1
 
-- **Unbiased randomness** — fixed modulo bias in character selection
-- **Guaranteed character types** — every selected type always appears in the password
-- **Entropy-based strength meter** — accurate scoring using `length × log₂(pool size)`
-- **Strength label** — shows Very Weak / Weak / Medium / Strong / Very Strong
-- **Copy button** — dedicated button in addition to clicking the password
-- **Session history** — last 10 passwords, persists across popup open/close, clears on browser exit
-- **Clear button** — reset the password display instantly
-- **Auto-regenerate** — password updates live as you change the length
-- **Input validation** — length is always clamped between 8 and 128
-- **Keyboard support** — fully navigable with Tab and Enter
-- **Improved symbols pool** — includes `[]{}~` for higher entropy
+- **Interactive Length Slider** — smooth real-time slider synchronized with the numeric input
+- **Live Option Updates** — password instantly regenerates whenever any checkbox is toggled
+- **Clear All History** — easily clear session history on demand with a single click
+- **Safe Storage Fallback** — seamless fallback mechanism ensuring zero runtime crashes
+- **Reliable Clipboard Copy** — integrated DOM fallback for 100% copy success
+- **Monospace Display** — high-readability monospace font styling for password verification
+- **Modern Dark UI** — refined layout, crisp action buttons, and smooth micro-animations
 
 ## 📥 Installation
 
