@@ -1,11 +1,16 @@
 :root {
-    --bg:       #0f172a;
-    --surface:  #1e2937;
-    --primary:  #6366f1;
-    --text:     #e2e8f0;
-    --text-secondary: #94a3b8;
-    --border:   #334155;
-    --success:  #22c55e;
+    --bg:              #0f172a;
+    --surface:         #1e293b;
+    --surface-hover:   #334155;
+    --primary:         #6366f1;
+    --primary-hover:   #4f46e5;
+    --text:            #f8fafc;
+    --text-secondary:  #94a3b8;
+    --border:          #334155;
+    --border-light:    #475569;
+    --success:         #22c55e;
+    --warning:         #eab308;
+    --danger:          #ef4444;
 }
 
 * {
@@ -16,54 +21,73 @@
 
 body {
     width: 380px;
-    overflow-y: auto;
+    max-width: 100vw;
     background: var(--bg);
     color: var(--text);
-    font-family: system-ui, -apple-system, Tahoma, Arial, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     padding: 18px;
     direction: ltr;
     text-align: left;
     line-height: 1.45;
+    user-select: none;
 }
 
 h2 {
     text-align: center;
     margin-bottom: 14px;
-    color: var(--primary);
-    font-size: 1.3rem;
+    color: #818cf8;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
+/* Password Display Area */
 #password {
     background: var(--surface);
     border: 2px solid var(--border);
     border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 1.35rem;
-    letter-spacing: 2px;
+    padding: 12px 14px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
     text-align: center;
-    min-height: 58px;
+    min-height: 56px;
     word-break: break-all;
     margin-bottom: 8px;
     cursor: pointer;
-    transition: border-color 0.2s;
-    user-select: none;
+    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+    user-select: all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
 }
 
 #password:hover {
     border-color: var(--primary);
+    background: #243044;
 }
 
+#password:focus-visible {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
+}
+
+/* Strength Meter */
 .strength-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 8px 0 12px;
+    margin: 6px 0 14px;
 }
 
 .strength-bar {
     flex: 1;
     height: 6px;
-    background: #334155;
+    background: #1e293b;
+    border: 1px solid var(--border);
     border-radius: 9999px;
     overflow: hidden;
 }
@@ -73,119 +97,236 @@ h2 {
     width: 0%;
     background: var(--primary);
     border-radius: 9999px;
-    transition: width 0.4s ease, background 0.4s ease;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s ease;
 }
 
 .strength-label {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    min-width: 70px;
+    min-width: 75px;
     text-align: right;
     color: var(--text-secondary);
-    transition: color 0.3s;
+    transition: color 0.3s ease;
+}
+
+/* Length Slider & Counter */
+.length-control {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+
+.length-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
 }
 
 .length-label {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
 }
 
 input[type="number"] {
-    width: 100%;
-    padding: 10px 11px;
+    width: 60px;
+    padding: 4px 8px;
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text);
-    border-radius: 8px;
-    font-size: 1.05rem;
-    margin: 5px 0 12px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
     outline: none;
     transition: border-color 0.2s;
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 input[type="number"]:focus {
     border-color: var(--primary);
 }
 
+.length-slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 4px;
+    background: #334155;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.length-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    transition: transform 0.15s ease, background-color 0.2s;
+}
+
+.length-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    background: #818cf8;
+}
+
+.length-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    transition: transform 0.15s ease, background-color 0.2s;
+}
+
+.length-slider::-moz-range-thumb:hover {
+    transform: scale(1.15);
+    background: #818cf8;
+}
+
+/* Options / Checkboxes */
 .options {
-    margin: 0 0 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 12px;
 }
 
 .options label {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 6px 0;
-    font-size: 0.93rem;
+    padding: 5px 8px;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
     cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 .options label:hover {
+    background: rgba(255, 255, 255, 0.04);
     color: var(--text);
 }
 
 input[type="checkbox"] {
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
     accent-color: var(--primary);
     cursor: pointer;
     flex-shrink: 0;
 }
 
-button {
+/* Generate Button */
+#generate {
     width: 100%;
     padding: 12px;
-    margin: 10px 0 6px;
+    margin: 4px 0 10px;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #ffffff;
     border: none;
     border-radius: 10px;
-    font-size: 1.02rem;
+    font-size: 0.98rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-}
-
-#generate {
-    background: var(--primary);
-    color: white;
-}
-
-#generate:hover  { background: #4f46e5; }
-#generate:active { transform: scale(0.98); }
-
-/* Action buttons row */
-.action-row {
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
-    margin: 6px 0 4px;
+    transition: filter 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+#generate:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+}
+
+#generate:active {
+    transform: scale(0.98);
+}
+
+.gen-icon {
+    display: inline-block;
+    font-size: 1.1rem;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gen-icon.spin {
+    transform: rotate(360deg);
+}
+
+/* Action Buttons Row */
+.action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .action-btn {
-    flex: 1;
-    padding: 9px 6px;
+    width: 100%;
+    margin: 0;
+    padding: 9px 8px;
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text-secondary);
     border-radius: 8px;
-    font-size: 0.88rem;
-    font-weight: 500;
+    font-size: 0.86rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.1s;
 }
 
 .action-btn:hover {
-    background: var(--border);
+    background: var(--surface-hover);
     color: var(--text);
+    border-color: var(--border-light);
+}
+
+.action-btn:active {
+    transform: scale(0.97);
+}
+
+.action-btn:focus-visible {
+    outline: none;
     border-color: var(--primary);
 }
 
-/* History panel */
+/* History Panel */
 .history-panel {
     display: none;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
-    margin: 4px 0;
+    margin: 8px 0;
     overflow: hidden;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .history-panel.open {
@@ -197,36 +338,56 @@ button {
     justify-content: space-between;
     align-items: center;
     padding: 8px 12px;
+    background: rgba(15, 23, 42, 0.4);
     border-bottom: 1px solid var(--border);
     font-size: 0.82rem;
     font-weight: 600;
     color: var(--text);
 }
 
-.history-note {
-    font-size: 0.72rem;
-    color: var(--text-secondary);
-    font-weight: 400;
+.history-clear-all {
+    background: none;
+    border: none;
+    color: #f87171;
+    font-size: 0.76rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.history-clear-all:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
 }
 
 .history-list {
-    max-height: 160px;
+    max-height: 150px;
     overflow-y: auto;
+}
+
+.history-list::-webkit-scrollbar {
+    width: 5px;
+}
+.history-list::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
 }
 
 .history-empty {
     text-align: center;
     padding: 16px;
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
 }
 
 .history-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 7px 12px;
-    border-bottom: 1px solid #1e293b;
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
     gap: 8px;
 }
 
@@ -235,67 +396,73 @@ button {
 }
 
 .history-pw {
-    font-size: 0.82rem;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.8rem;
     color: var(--text);
-    letter-spacing: 1px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     flex: 1;
     min-width: 0;
+    user-select: all;
 }
 
 .history-copy-btn {
     width: auto;
-    background: none;
-    border: none;
+    background: transparent;
+    border: 1px solid transparent;
     color: var(--text-secondary);
     cursor: pointer;
-    font-size: 1rem;
-    padding: 2px 6px;
+    font-size: 0.95rem;
+    padding: 3px 6px;
     margin: 0;
     border-radius: 4px;
     flex-shrink: 0;
-    transition: color 0.2s, background 0.2s;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
 }
 
 .history-copy-btn:hover {
-    color: var(--primary);
-    background: var(--border);
+    color: var(--text);
+    background: var(--surface-hover);
+    border-color: var(--border);
 }
 
+/* Signature */
 .signature {
     text-align: center;
-    margin-top: 8px;
+    margin-top: 10px;
     font-size: 0.76rem;
     color: #64748b;
 }
 
 .signature a {
-    color: var(--primary);
+    color: #818cf8;
     text-decoration: none;
     font-weight: 600;
+    transition: color 0.2s;
 }
 
 .signature a:hover {
+    color: #a5b4fc;
     text-decoration: underline;
 }
 
+/* Toast */
 .toast {
     position: fixed;
-    bottom: 18px;
+    bottom: 16px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(6px);
     background: var(--success);
     color: white;
-    padding: 10px 26px;
-    border-radius: 50px;
-    font-size: 0.92rem;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
     font-weight: 500;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     opacity: 0;
     pointer-events: none;
     z-index: 1000;
-    transition: opacity 0.25s ease, background 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
     white-space: nowrap;
 }
